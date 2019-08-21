@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import * as firebase from 'firebase'
+
 
 function Copyright() {
   return (
@@ -53,10 +55,37 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
-
 export default function SignIn() {
   const classes = useStyles();
-
+  let emailField = React.createRef();
+  let passwordField = React.createRef();
+  const initializeFireBaseApp = () => {
+    const app = firebase.initializeApp({
+        apiKey : "AIzaSyCD5fs-0EYEiyP2tGTrCVWofGo9uncV57k",
+        authDomain: "bennegopalkrishnatmplproj.firebaseapp.com",
+    })
+    return app;
+}
+  const firebase_app = initializeFireBaseApp();
+  const app_auth_controller = firebase.auth(firebase_app);
+  const onSubmitForm = () =>{
+    let email = emailField.current.value;
+    let password = passwordField.current.value;
+    app_auth_controller.signInWithEmailAndPassword(email,password).then((cred)=>{
+            window.location.href = `/home?uname=${cred.user.email}`
+    }).catch((err)=>{
+        var errorCode = err.code;
+        var errorMessage = err.message;
+        if (errorCode === 'auth/wrong-password') {
+        console.log('Wrong password.');
+        } else {
+        console.log(errorMessage);
+        }
+        console.log(err);
+    })
+    
+    //window.location.href = "/home";
+}
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -78,6 +107,7 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            inputRef={emailField}
           />
           <TextField
             variant="outlined"
@@ -89,19 +119,20 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            inputRef={passwordField}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={onSubmitForm}
           >
-            Sign In
+              Sign In
           </Button>
           <Grid container>
             <Grid item xs>
