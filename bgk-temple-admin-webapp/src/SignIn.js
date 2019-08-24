@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import * as firebase from 'firebase'
+import { async } from 'q';
 
 
 function Copyright() {
@@ -59,15 +60,32 @@ export default function SignIn() {
   const classes = useStyles();
   let emailField = React.createRef();
   let passwordField = React.createRef();
-  const initializeFireBaseApp = () => {
+
+  function fetchConfig(){
+      let p = new Promise((resolve,reject)=>{
+                var oReq = new XMLHttpRequest();
+                oReq.addEventListener("load", function(){
+                  let responseJSON = JSON.parse(this.responseText);
+                  resolve(responseJSON["FIRESTORE_KEY"]);
+                });
+                oReq.open("GET", "https://bgkconfig.herokuapp.com/config",true);
+                oReq.send();
+      })
+      return p;
+  }
+
+  async function initializeFireBaseApp(){
+    const key = await fetchConfig();
     const app = firebase.initializeApp({
-        apiKey : "AIzaSyCD5fs-0EYEiyP2tGTrCVWofGo9uncV57k",
+        apiKey : key,
         authDomain: "bennegopalkrishnatmplproj.firebaseapp.com",
     })
     return app;
 }
-  const firebase_app = initializeFireBaseApp();
-  const app_auth_controller = firebase.auth(firebase_app);
+  let app_auth_controller;
+  initializeFireBaseApp().then(app=>{
+    app_auth_controller = firebase.auth(app);
+  });
   const onSubmitForm = () =>{
     let email = emailField.current.value;
     let password = passwordField.current.value;

@@ -5,7 +5,6 @@ import './App.css';
 import {BrowserRouter as Router} from 'react-router-dom'
 import Route from 'react-router-dom/Route'
 import HomePage from './HomePage'
-import NavLink from 'react-router-dom/NavLink'
 
 export class App extends Component {
   render() {
