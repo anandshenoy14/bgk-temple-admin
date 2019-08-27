@@ -5,6 +5,7 @@ import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom'
 import Route from 'react-router-dom/Route'
 import HomePage from './HomePage'
+import Redirect from 'react-router-dom'
 import * as firebase from 'firebase'
 
 export class App extends Component {
@@ -55,7 +56,6 @@ export class App extends Component {
             "isSignedIn" : true,
             "uname" : email
           })
-          //window.location.href = `/home?uname=${cred.user.email}`
     }).catch((err)=>{
       var errorCode = err.code;
       var errorMessage = err.message;
@@ -67,6 +67,14 @@ export class App extends Component {
       console.log(err);
     })
   }
+  signOut(){
+    this.state["appController"].signOut().then(()=> {
+      console.log('Successfully Signed Out')
+      this.setState({"isSignedIn" : false});
+    }).catch(function(error) {
+      // An error happened.
+    });
+  }
   render() {
     return (
       <Router>
@@ -74,8 +82,7 @@ export class App extends Component {
           () => {
             return (
               <div>
-                <MainAppBar></MainAppBar>
-                {this.state.isSignedIn ? (<HomePage uname={this.state.uname}></HomePage>) : (<SignIn signInController={this.signIn.bind(this)}></SignIn>)}
+                {this.state.isSignedIn ? (<HomePage signOutController={this.signOut.bind(this)}></HomePage>) : (<><MainAppBar></MainAppBar><SignIn signInController={this.signIn.bind(this)}></SignIn></>)}
               </div>);
           }
         }>

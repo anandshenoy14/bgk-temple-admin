@@ -16,8 +16,7 @@ export class HomePage extends Component {
     render() {
         return (
             <div>
-                <LoggedInAppBar onSignOut={this.props.onSignOut}></LoggedInAppBar>
-                <h1>Welcome, {this.props.uname}</h1>
+                <LoggedInAppBar onSignOut={this.props.signOutController}></LoggedInAppBar>
             </div>
         );
     }
