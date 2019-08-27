@@ -10,14 +10,14 @@ export class HomePage extends Component {
         }
     }
     componentDidMount(){
-        const values = queryString.parse(this.props.location.search)
-        this.setState({params : Object.assign({},values)})
+        // const values = queryString.parse(this.props.location.search)
+        // this.setState({params : Object.assign({},values)})
     }
     render() {
         return (
             <div>
                 <LoggedInAppBar onSignOut={this.props.onSignOut}></LoggedInAppBar>
-                <h1>Welcome, {this.state.params.uname}</h1>
+                <h1>Welcome, {this.props.uname}</h1>
             </div>
         );
     }

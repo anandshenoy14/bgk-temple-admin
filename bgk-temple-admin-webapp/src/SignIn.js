@@ -12,8 +12,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import * as firebase from 'firebase'
-import { async } from 'q';
 
 
 function Copyright() {
@@ -56,54 +54,11 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
-export default function SignIn() {
+export default function SignIn(props) {
   const classes = useStyles();
   let emailField = React.createRef();
   let passwordField = React.createRef();
-
-  function fetchConfig(){
-      let p = new Promise((resolve,reject)=>{
-                var oReq = new XMLHttpRequest();
-                oReq.addEventListener("load", function(){
-                  let responseJSON = JSON.parse(this.responseText);
-                  resolve(responseJSON["FIRESTORE_KEY"]);
-                });
-                oReq.open("GET", "https://bgkconfig.herokuapp.com/config",true);
-                oReq.send();
-      })
-      return p;
-  }
-
-  async function initializeFireBaseApp(){
-    const key = await fetchConfig();
-    const app = firebase.initializeApp({
-        apiKey : key,
-        authDomain: "bennegopalkrishnatmplproj.firebaseapp.com",
-    })
-    return app;
-}
-  let app_auth_controller;
-  initializeFireBaseApp().then(app=>{
-    app_auth_controller = firebase.auth(app);
-  });
-  const onSubmitForm = () =>{
-    let email = emailField.current.value;
-    let password = passwordField.current.value;
-    app_auth_controller.signInWithEmailAndPassword(email,password).then((cred)=>{
-            window.location.href = `/home?uname=${cred.user.email}`
-    }).catch((err)=>{
-        var errorCode = err.code;
-        var errorMessage = err.message;
-        if (errorCode === 'auth/wrong-password') {
-        console.log('Wrong password.');
-        } else {
-        console.log(errorMessage);
-        }
-        console.log(err);
-    })
-    
-    //window.location.href = "/home";
-}
+  let signIn = props.signInController;
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -148,7 +103,7 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={onSubmitForm}
+            onClick={()=>signIn(emailField.current.value,passwordField.current.value)}
           >
               Sign In
           </Button>
