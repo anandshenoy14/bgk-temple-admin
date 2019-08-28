@@ -5,8 +5,9 @@ import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom'
 import Route from 'react-router-dom/Route'
 import HomePage from './HomePage'
-import Redirect from 'react-router-dom'
-import * as firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
 
 export class App extends Component {
   constructor() {
@@ -34,7 +35,9 @@ export class App extends Component {
       const configs = await fetchConfig();
       const app = firebase.initializeApp({
         apiKey: configs["BGK_FIREBASE_KEY"],
-        authDomain: configs["BGK_FIREBASE_DOMAIN"]
+        authDomain: configs["BGK_FIREBASE_DOMAIN"],
+        projectId : "bennegopalkrishnatmplproj",
+        databaseURL: "https://bennegopalkrishnatmplproj.firebaseio.com"
       })
       return app;
     }
@@ -49,12 +52,23 @@ export class App extends Component {
       })
     });
   }
+  async fireStoreDataFetcher() {
+    const collectionKey = "devotees"; //name of the collection
+    const firestore = firebase.firestore(this.state["firebaseApp"]);
+    const querySnapshot = await firestore.collection(collectionKey).get();
+    const data = []
+    querySnapshot.forEach(function (doc) {
+      let record = {};
+      Object.assign(record, doc.data())
+      record["id"] = doc.id;
+      data.push(record)
+    });
+    return data;
+  }
   signIn(email,password){
-    console.log('Now verifying!!!')
     this.state["appController"].signInWithEmailAndPassword(email,password).then((cred)=>{
           this.setState({
-            "isSignedIn" : true,
-            "uname" : email
+            "isSignedIn" : true
           })
     }).catch((err)=>{
       var errorCode = err.code;
@@ -82,7 +96,7 @@ export class App extends Component {
           () => {
             return (
               <div>
-                {this.state.isSignedIn ? (<HomePage signOutController={this.signOut.bind(this)}></HomePage>) : (<><MainAppBar></MainAppBar><SignIn signInController={this.signIn.bind(this)}></SignIn></>)}
+                {this.state.isSignedIn ? (<HomePage signOutController={this.signOut.bind(this)} fireStoreDataFetcher={this.fireStoreDataFetcher.bind(this)}></HomePage>) : (<><MainAppBar></MainAppBar><SignIn signInController={this.signIn.bind(this)}></SignIn></>)}
               </div>);
           }
         }>
