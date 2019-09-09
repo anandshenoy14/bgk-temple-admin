@@ -3,32 +3,33 @@ import queryString from 'query-string'
 import LoggedInAppBar from './LoggedInAppBar'
 import DataTable from './DataTable'
 import Loader from './Loader'
+import SearchBar from './SearchBar'
 export class HomePage extends Component {
-    constructor(){
+    constructor() {
         super()
         this.state = {
-            params : {},
-            data  : []
+            params: {},
+            data: []
         }
     }
-    async dataFetcher(){
+    async dataFetcher() {
         const data = await this.props.fireStoreDataFetcher();
         return data
     }
-    componentDidMount(){
+    componentDidMount() {
         const current = this.state.data;
         const fetchedData = this.dataFetcher();
-        fetchedData.then(d=>{
+        fetchedData.then(d => {
             const newData = current.concat(d);
-            console.log('Now finally new data is ==> '+newData);
-            this.setState({data : newData})
+            this.setState({ data: newData })
         })
     }
     render() {
         return (
             <div>
                 <LoggedInAppBar onSignOut={this.props.signOutController}></LoggedInAppBar>
-                {this.state.data.length > 0 ? (<DataTable records={this.state.data}></DataTable>) : (<Loader></Loader>)}
+                <div className="searchBar"><SearchBar></SearchBar></div>
+                {this.state.data.length > 0 ? (<><DataTable records={this.state.data}></DataTable></>) : (<Loader></Loader>)}
             </div>
         );
     }

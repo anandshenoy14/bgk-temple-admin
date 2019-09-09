@@ -11,7 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { Link } from '@material-ui/core';
+import MenuBar from './MenuBar'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,41 +47,10 @@ export default function MenuAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
+          <MenuBar isSignedIn={auth} signOutAction={signOut}></MenuBar>
           <Typography variant="h6" className={classes.title}>
           Benne Gopal Krishna Temple Admin
           </Typography>
-          {auth && (
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem>
-                      <Link color="textPrimary" underline="none" onClick={()=>signOut()}>Sign Out</Link>
-                  </MenuItem>
-              </Menu>
-            </div>
-          )}
         </Toolbar>
       </AppBar>
     </div>

@@ -13,13 +13,13 @@ export class App extends Component {
   constructor() {
     super()
     this.state = {
-      "isSignedIn" : false,
-      "appController" : undefined,
-      "firebaseApp" : undefined
+      "isSignedIn": false,
+      "appController": undefined,
+      "firebaseApp": undefined
     }
   }
-  componentDidMount(){
-    const fetchConfig = function(){
+  componentDidMount() {
+    const fetchConfig = function () {
       let p = new Promise((resolve, reject) => {
         var oReq = new XMLHttpRequest();
         oReq.addEventListener("load", function () {
@@ -31,31 +31,31 @@ export class App extends Component {
       })
       return p;
     }
-    async function initializeFireBaseApp(){
+    async function initializeFireBaseApp() {
       const configs = await fetchConfig();
       const app = firebase.initializeApp({
         apiKey: configs["BGK_FIREBASE_KEY"],
         authDomain: configs["BGK_FIREBASE_DOMAIN"],
-        projectId : "bennegopalkrishnatmplproj",
+        projectId: "bennegopalkrishnatmplproj",
         databaseURL: "https://bennegopalkrishnatmplproj.firebaseio.com"
       })
       return app;
     }
     //initialize firebase app
-    initializeFireBaseApp().then(app=>{
+    initializeFireBaseApp().then(app => {
       const controller = firebase.auth(app);
-      const isSignedIn = controller.currentUser != null 
+      const isSignedIn = controller.currentUser != null
       this.setState({
-          "isSignedIn" : isSignedIn,
-          "appController" : controller,
-          "firebaseApp" : app
+        "isSignedIn": isSignedIn,
+        "appController": controller,
+        "firebaseApp": app
       })
     });
   }
   async fireStoreDataFetcher() {
-    const collectionKey = "devotees"; //name of the collection
+    const collectionKey = "devotees"; //name of the collection 
     const firestore = firebase.firestore(this.state["firebaseApp"]);
-    const querySnapshot = await firestore.collection(collectionKey).get();
+    const querySnapshot = await firestore.collection(collectionKey).where("City", "==", "Mumbai").limit(5).get();
     const data = []
     querySnapshot.forEach(function (doc) {
       let record = {};
@@ -65,27 +65,31 @@ export class App extends Component {
     });
     return data;
   }
-  signIn(email,password){
-    this.state["appController"].signInWithEmailAndPassword(email,password).then((cred)=>{
-          this.setState({
-            "isSignedIn" : true
-          })
-    }).catch((err)=>{
+  signIn(email, password) {
+    this.state["appController"].signInWithEmailAndPassword(email, password).then((cred) => {
+      this.setState({
+        "isSignedIn": true
+      })
+    }).catch((err) => {
       var errorCode = err.code;
       var errorMessage = err.message;
       if (errorCode === 'auth/wrong-password') {
-      console.log('Wrong password.');
+        this.setState({
+          "signInError": true,
+          "errorMessage" : "Wrong Password.Try Again!"
+        })
+        console.log('Wrong password.');
       } else {
-      console.log(errorMessage);
+        console.log(errorMessage);
       }
       console.log(err);
     })
   }
-  signOut(){
-    this.state["appController"].signOut().then(()=> {
+  signOut() {
+    this.state["appController"].signOut().then(() => {
       console.log('Successfully Signed Out')
-      this.setState({"isSignedIn" : false});
-    }).catch(function(error) {
+      this.setState({ "isSignedIn": false });
+    }).catch(function (error) {
       // An error happened.
     });
   }
@@ -96,7 +100,8 @@ export class App extends Component {
           () => {
             return (
               <div>
-                {this.state.isSignedIn ? (<HomePage signOutController={this.signOut.bind(this)} fireStoreDataFetcher={this.fireStoreDataFetcher.bind(this)}></HomePage>) : (<><MainAppBar></MainAppBar><SignIn signInController={this.signIn.bind(this)}></SignIn></>)}
+                {this.state.isSignedIn ? (<HomePage signOutController={this.signOut.bind(this)} fireStoreDataFetcher={this.fireStoreDataFetcher.bind(this)}></HomePage>) : 
+                                          (<><MainAppBar></MainAppBar><SignIn error={this.state.signInError} errorMessage={this.state.errorMessage} signInController={this.signIn.bind(this)}></SignIn></>)}
               </div>);
           }
         }>

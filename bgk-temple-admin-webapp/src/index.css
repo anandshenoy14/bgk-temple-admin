@@ -11,3 +11,60 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.search-bar-row{
+  display: flex;
+  width : 100%;
+}
+.search-bar-element{
+  margin : 1rem;
+}
+.search-bar-element.text{
+  width : 70%;
+}
+.search-bar-element.field{
+  width : 15%;
+}
+.search-bar-element.searchBtn{
+  width : 15%;
+  position: relative;
+  top: 10%;
+}
+
+@media (min-width: 320px) and (max-width: 1024px) {
+      .search-bar-row{
+        flex-direction: column;
+        padding : 1rem;
+      }
+      .search-bar-element.text .myTextField{
+        margin-left : 0px;
+        margin-right: 0px;
+      }
+      .search-bar-element{
+        margin: 0px;
+      }
+      .search-bar-element.field .myDropDown{
+        margin-left : 0px;
+        margin-right: 0px;
+        width : 100%;
+      }
+      .mySearchBtn {
+        width: 50%;
+        margin: 0px;
+      }
+      .search-bar-element.text{
+        width : 100%;
+      }
+      .search-bar-element.field{
+        width : 100%;
+      }
+      .search-bar-element.searchBtn {
+        width: 100%;
+        display: flex;
+        flex: 1 1;
+        justify-content: space-evenly;
+      }
+      .myTable{
+        min-width: 0%;
+      }
+}

@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1),
     overflowX: 'auto',
   },
   table: {
@@ -20,10 +20,10 @@ const useStyles = makeStyles(theme => ({
 export default function DataTable(props) {
   const classes = useStyles();
   const rows = props.records ;
-  const columnHeaders = Object.keys(rows[0]);
+  const columnHeaders = ["First_Name","Surname","City"];
   return (
     <Paper className={classes.root}>
-      <Table className={classes.table}>
+      <Table className={classes.table + ' myTable'}>
         <TableHead>
           <TableRow>
                       {columnHeaders.map(header => (
