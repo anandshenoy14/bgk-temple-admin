@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import { red } from '@material-ui/core/colors';
 
 
 function Copyright() {
@@ -53,12 +55,17 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  error : {
+    color : theme.palette.error.light
+  }
 }));
 export default function SignIn(props) {
   const classes = useStyles();
   let emailField = React.createRef();
   let passwordField = React.createRef();
   let signIn = props.signInController;
+  let error = props.error;
+  let errorMessage = props.errorMessage;
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -83,6 +90,7 @@ export default function SignIn(props) {
             inputRef={emailField}
           />
           <TextField
+            error={error ?true : false}
             variant="outlined"
             margin="normal"
             required
@@ -94,6 +102,7 @@ export default function SignIn(props) {
             autoComplete="current-password"
             inputRef={passwordField}
           />
+          {error ? <FormHelperText id="component-error-text" className={classes.error}>{errorMessage}</FormHelperText> : false}
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"

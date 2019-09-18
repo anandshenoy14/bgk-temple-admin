@@ -76,19 +76,27 @@ export class App extends Component {
       if (errorCode === 'auth/wrong-password') {
         this.setState({
           "signInError": true,
-          "errorMessage" : "Wrong Password.Try Again!"
+          "errorMessage": "Wrong Password.Try Again!"
         })
-        console.log('Wrong password.');
+        //console.log('Wrong password.');
       } else {
-        console.log(errorMessage);
+        //console.log(errorMessage);
+        this.setState({
+          "signInError": true,
+          "errorMessage": `${errorMessage}`
+        })
       }
-      console.log(err);
+      //console.log(err);
     })
   }
   signOut() {
     this.state["appController"].signOut().then(() => {
       console.log('Successfully Signed Out')
-      this.setState({ "isSignedIn": false });
+      this.setState({
+        "isSignedIn": false,
+        "signInError": false,
+        "errorMessage": ""
+      });
     }).catch(function (error) {
       // An error happened.
     });
@@ -100,8 +108,22 @@ export class App extends Component {
           () => {
             return (
               <div>
-                {this.state.isSignedIn ? (<HomePage signOutController={this.signOut.bind(this)} fireStoreDataFetcher={this.fireStoreDataFetcher.bind(this)}></HomePage>) : 
-                                          (<><MainAppBar></MainAppBar><SignIn error={this.state.signInError} errorMessage={this.state.errorMessage} signInController={this.signIn.bind(this)}></SignIn></>)}
+                {
+                  this.state.isSignedIn ?
+                    (<HomePage 
+                      signOutController={this.signOut.bind(this)}
+                      fireStoreDataFetcher={this.fireStoreDataFetcher.bind(this)}>
+                    </HomePage>)
+                    :
+                    (<>
+                      <MainAppBar></MainAppBar>
+                      <SignIn 
+                        error={this.state.signInError}
+                        errorMessage={this.state.errorMessage}
+                        signInController={this.signIn.bind(this)}>
+                      </SignIn>
+                    </>)
+                }
               </div>);
           }
         }>
