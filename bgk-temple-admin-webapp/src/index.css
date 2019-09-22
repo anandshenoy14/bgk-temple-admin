@@ -11,7 +11,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
+.cardsContainer{
+  padding: 5px;
+}
+.card{
+  position: relative;
+  margin-bottom : 8px;
+}
+.MuiButtonBase-root.helpIcon{
+  position : absolute;
+  right : 20px;
+  top : 50%;
+  transform: translateY(-50%)
+}
 .search-bar-row{
   display: flex;
   width : 100%;
